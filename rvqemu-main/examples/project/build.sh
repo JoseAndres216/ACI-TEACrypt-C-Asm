@@ -50,7 +50,7 @@ riscv64-unknown-elf-gcc \
     -o encrypt.o
 
 if [ $? -ne 0 ]; then
-    echo "Math assembly compilation failed"
+    echo "Encrypt assembly compilation failed"
     exit 1
 fi
 
@@ -67,7 +67,7 @@ riscv64-unknown-elf-gcc \
     -o decrypt.o
 
 if [ $? -ne 0 ]; then
-    echo "Encrypt/decrypt assembly compilation failed"
+    echo "Decrypt assembly compilation failed"
     exit 1
 fi
 
