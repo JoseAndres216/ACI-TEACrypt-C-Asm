@@ -55,6 +55,45 @@ uint32_t add_padding(uint8_t *buffer, uint32_t len) {
     return len + pad;
 }
 
+char read_char() {
+    volatile char *uart_data   = (volatile char*)0x10000000;
+    volatile char *uart_status = (volatile char*)0x10000005;
+
+    while ((*uart_status & 0x01) == 0);
+
+    return *uart_data;
+}
+
+
+int get_user_input() {
+    int valid_input = 0;
+    int selected_idx;
+    while (!valid_input)
+    {
+        print_char('\n');
+        print_string("Choose a number to test any of the texts\n");
+        print_string("1. HOLA1234\n");
+        print_string("2. Mensaje de prueba para TEA\n");
+        print_char('\n');
+        char c;
+        do {
+            c = read_char();
+        } while (c == '\r' || c == '\n');
+
+        selected_idx = c - '1';
+        print_string("Choosen text: ");
+        print_char(selected_idx + '1');
+        if (selected_idx >= 0 && selected_idx < 2) {
+            valid_input = 1;
+        } else
+        {
+            print_string("Invalid input.\n");
+        }
+    }
+    return selected_idx;
+}
+
+
 /* ===================================================    ENCRYPT FUNCTIONS    =================================================== */
 
 void tea_encrypt_block(uint32_t v[2], const uint32_t k[4]) {
@@ -115,6 +154,8 @@ int main() {
         "Mensaje de prueba para TEA"
     };
 
+    print_string("================================================== AUTOMATIC TESTS  ==================================================\n");
+    
     for (int t = 0; t < 2; t++) {
         uint8_t buffer[MAX_BUFFER];
 
@@ -124,6 +165,30 @@ int main() {
 
         // Encrypts
         uint32_t cipher_len = tea_encrypt_text(tests[t], buffer, key);
+        print_string("Encrypted text: ");
+        print_hex(buffer, cipher_len);
+
+        // Decrypts
+        uint32_t plain_len = tea_decrypt_text(buffer, cipher_len, key);
+        buffer[plain_len] = '\0';
+        print_string("Decrypted text: ");
+        print_string((char*)buffer);
+        print_char('\n');
+    }
+
+    while(1){
+        print_string("==================================================    USER TEST     ==================================================\n");
+
+
+        int selected_id = get_user_input();
+        uint8_t buffer[MAX_BUFFER];
+
+        print_string("\nOriginal text: ");
+        print_string(tests[selected_id]);
+        print_char('\n');
+
+        // Encrypts
+        uint32_t cipher_len = tea_encrypt_text(tests[selected_id], buffer, key);
         print_string("Encrypted text: ");
         print_hex(buffer, cipher_len);
 
