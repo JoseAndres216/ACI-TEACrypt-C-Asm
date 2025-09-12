@@ -1,5 +1,7 @@
 **Arquitectura de software**
 
+Para llevar a cabo el proyecto
+
 **Funcionalidades**
 
 ```c
