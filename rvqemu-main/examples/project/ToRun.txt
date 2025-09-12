@@ -1,0 +1,19 @@
+Terminal 1:
+
+./run.sh
+
+cd /home/rvqemu-dev/workspace/examples/project
+
+./build.sh
+
+./run-qemu.sh
+
+Terminal 2:
+
+docker exec -it rvqemu /bin/bash
+
+cd /home/rvqemu-dev/workspace/examples/project
+
+gdb-multiarch project.elf
+
+target remote :1234
