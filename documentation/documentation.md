@@ -214,7 +214,11 @@ tea_decrypt:
 
 **Evidencias de ejecución**
 
+Al ejecutar los comandos de la sección de instrucciones, se realiza una primera prueba sobre un arreglo que contiene los textos "HOLA1234" y "Mensaje de prueba para TEA", enviando ambos mensajes de uno por uno para probar su cifrado.
+
 ![image](/img/automatic_tests.png)
+
+Posteriormente, el sistema se mantiene a la espera de cualquier entrada de usuario, con el fin de realizar una prueba de cifrado con un texto específico. La siguientes imagenes muestran pruebas sobre ambos mensajes, la primera ante la entrada "1" por parte del usuario, y la segunda ante la entrada de "2":
 
 ![image](/img/user_test_1.png)
 
@@ -222,7 +226,7 @@ tea_decrypt:
 
 **Discusión de resultados**
 
-
+Cómo se observa en las evidencias incluidas, ambos mensajes experimentan un correcto encriptado y desencriptado; tanto para el caso en que no se requiere rellenado o padding, o casos de varios bloques completos, como para un solo bloque completamente lleno, los mensajes son cifrados en impresos a nivel de consola en su forma hexadecimal, y posteriormente, se aprecia un correcto descifrado al obtener el mensaje originalmente previsto.
 
 **Instrucciones para compilar y utilizar el sistema**
 
