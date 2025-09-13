@@ -1,8 +1,10 @@
 **Arquitectura de software**
 
-Para llevar a cabo el proyecto
+Para llevar a cabo el proyecto se desarrolló una arquitectura que implementa una interfaz de usuario en C, la cual se encarga de interactuar y recibir las entradas de usuario y,haciendo uso de funciones auxiliares externas realizadas en ensamblador, realiza las 32 rondas de cifrado o descifrado según las necesidades del usuario. Este software implementa una una simulación bare-metal a partir del uso de QEMU,de modo que simula un entorno independiente de sistema operativo, que no utiliza librerías externas y depende únicamente de las funcionalidades desarrolladas para su funcionamiento.
 
 **Funcionalidades**
+
+Para la complementación de bloques de 64 bits, y para su posterior análisis en forma de bloques completos, se implementó la función add_padding, la cual toma las entradas a cifrar que no completan uno o varios bloques de 64 bits y los completa hasta llenarlos, tal como se observa en en el siguiente código:
 
 ```c
 uint32_t add_padding(uint8_t *buffer, uint32_t len) {
@@ -13,6 +15,8 @@ uint32_t add_padding(uint8_t *buffer, uint32_t len) {
     return len + pad;
 }
 ```
+
+Por otra parte, para la lectura de entradas por parte del usuario se implementaron las funciones read_char y get_user_input. La función read_char se encarga de leer constantemente los inputs de teclado por parte del usuario; esta funcionalidad se plantea para leer las entradas del usuario a la hora de seleccionar el texto a cifrar y descifrar. Por otra parte, la función get_user_input muestra las posibilidades de opciones de texto a cifrar y llama a la función read_char para la lectura de selección.
 
 ```c
 
@@ -56,6 +60,9 @@ int get_user_input() {
 
 ```
 
+Ahora bien, las funciones tea_encrypt_block y tea_encrypt_text trabajan colectivamente para el cifrado de texto en forma de bloques. la función principal, tea_encrypt_text toma el texto seleccionado por el usuario y la clave proporcionada por el mismo, la fracciona en bloques, agrega el padding necesario para rellenar el último bloque en caso de estar incompleto y así, bloque por bloque, llamar a la función tea_encrypt_block que invoca a la funcionalidad externa de ensamblador para llevar a cabo cada ronda de cifrado.
+
+
 ```c
 
 void tea_encrypt_block(uint32_t v[2], const uint32_t k[4]) {
@@ -83,6 +90,7 @@ uint32_t tea_encrypt_text(const char *text, uint8_t *output, const uint32_t key[
 
 ```
 
+La función tea_encrypt toma la clave dada por el usuario y la información proveniente de la función tea_encrypt_block y realiza la el encriptado de v0 y v1, retornandolos respectivamente cifrados en los 8 bits del registro a0.
 
 ```s
 
@@ -130,6 +138,8 @@ tea_encrypt:
 
 
 ```
+
+Del mismo modo, las funciones tea_decrypt_block, tea_decrypt_text y tea_decrypt, llevan a cabo el proceso de desencriptado del texto dado por el usuario y con la clave proporcionada.
 
 ```c
 
